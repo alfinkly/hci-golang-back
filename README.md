@@ -236,6 +236,74 @@ GET /health
 2. **LoggingMiddleware** - логирование запросов
 3. **JWTMiddleware** - проверка JWT токенов
 
+## Тестирование
+
+### Автоматическое тестирование
+
+Используйте скрипт для автоматического тестирования всех endpoints:
+
+```bash
+# Убедитесь, что сервер запущен на localhost:8080
+./test_api.sh
+```
+
+Скрипт автоматически:
+- Регистрирует пользователя
+- Авторизуется и получает JWT токен
+- Создает лекарство, поставщика
+- Выполняет закупку и продажу
+- Выводит результаты всех операций
+
+### Ручное тестирование
+
+Используйте curl или Postman для тестирования endpoints:
+
+```bash
+# Регистрация
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user1","email":"user1@test.com","password":"pass123"}'
+
+# Вход и получение токена
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user1","password":"pass123"}'
+
+# Использование токена для защищенных маршрутов
+curl http://localhost:8080/api/medicines \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+### Unit тесты
+
+Запустите Go тесты:
+
+```bash
+go test ./... -v
+```
+
+## Развертывание
+
+### С использованием Docker Compose
+
+```bash
+# Запустить PostgreSQL и приложение
+docker-compose up -d
+
+# Остановить
+docker-compose down
+```
+
+### Только PostgreSQL через Docker
+
+```bash
+# Запустить только PostgreSQL
+docker-compose up -d postgres
+
+# Затем запустить приложение локально
+go run main.go
+```
+
 ## Лицензия
 
 MIT License - см. файл LICENSE для деталей
